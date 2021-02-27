@@ -11,7 +11,7 @@ ctrl.start();
 function textToAudio() {                
     let speech = new SpeechSynthesisUtterance();
     speech.lang = "en-US";
-    speech.text = 'hello';
+    speech.text = document.getElementById('text-to-speech');
     speech.volume = 1;
     speech.rate = 1;
     speech.pitch = 1;
