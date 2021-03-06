@@ -46,12 +46,6 @@ class App extends Component {
       s.parentNode.insertBefore(gcse, s);
     })();
     
-    // say.queue = [];
-    // //$(document).on("click mousemove", deQueue);
-    // //document.addEventListener("click mousemove", deQueue);
-    // ["click", "mousemove"].forEach(e => document.addEventListener(e, deQueue));
-    // say("hello");
-    
     //const ctrl = new AnyControl();
     console.log(ctrl);
     const _this = this;
@@ -62,16 +56,6 @@ class App extends Component {
       }
     });
     ctrl.start();
-
-    window.addEventListener('keydown', function(event) {
-      if (event.keyCode == 9) {
-          alert('tab was pressed');
-  
-      }
-      else if (event.key === 'Enter') {
-          alert('enter was pressed');
-      }
-  }, true);
   }
 
   textToAudio = () => {
@@ -83,11 +67,6 @@ class App extends Component {
     speech.pitch = 1;
 
     window.speechSynthesis.speak(speech);
-    // speech.onend = function (event) {
-    //   window.speechSynthesis.cancel();
-    //   console.log(event);
-    //   ctrl.start();
-    // };
   };
 
   render() {
