@@ -1,7 +1,5 @@
 # Foresight
 
-# Name of the tool
-
 This tool is a small JavaScript library that lets your users/visually challenged access the web with voice commands. It is built on top of the Webkit Speech API, SpeechSynthesisutterance and helps visually challenged to access the web by using these options Text to Speech, Speech Recognition and tracking user interaction.
 
 This tool is free to use and modify under the MIT license.
