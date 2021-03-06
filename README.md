@@ -17,6 +17,8 @@ Google Chrome, Firefox and IE (latest)
 
 Example:
 
+![alt text](https://github.com/Harsha-Govindaraju/Foresight/blob/main/src/assets/opensource%20tool%202.png?raw=true)
+
 ## Getting started
 
 ```
