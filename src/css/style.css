@@ -1,0 +1,53 @@
+body {
+  overflow: hidden;
+}
+input {
+  padding: 10px;
+  width: 300px;
+  border-radius: 5px;
+  border: solid 2px #bbb;
+}
+div {
+  padding: 10px;
+}
+button {
+  padding: 10px;
+  background-color: #6a67ce;
+  color: #ffffff;
+  border: 0px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+#___gcse_1 {
+  max-height: 450px;
+  overflow-y: auto;
+  /* background: #d0ecef; */
+}
+.showGoogleSearch {
+  visibility: show;
+}
+.showGoogleSearchResults {
+  visibility: show;
+}
+.hideGoogleSearch {
+  visibility: show;
+}
+.hideGoogleSearchResults {
+  visibility: show;
+}
+.jBot {
+  height: 250px;
+  width: 250px;
+}
+.hiddenTextSpeech {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background:black;
+  text-align:center;
+  color:white;
+}
+.hide .hiddenTextSpeech{display:block}
