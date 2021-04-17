@@ -46,14 +46,6 @@ class App extends Component {
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(gcse, s);
     })();
-    
-    // say.queue = [];
-    // //$(document).on("click mousemove", deQueue);
-    // //document.addEventListener("click mousemove", deQueue);
-    // ["click", "mousemove"].forEach(e => document.addEventListener(e, deQueue));
-    // say("hello");
-    
-    //const ctrl = new AnyControl();
     console.log(ctrl);
     const _this = this;
     //ctrl.debug(true);
@@ -64,14 +56,7 @@ class App extends Component {
     });
     ctrl.start();
 
-    // window.addEventListener('keydown', function(event) {
-    //   if (event.key === "Tab") {
-    //       console.log(document.activeElement);
-    //   }
-    //   else if (event.key === 'Enter') {
-    //       alert('enter was pressed');
-    //   }
-    // }, true);
+   
     
     document.addEventListener('keyup', function(e) {
       var focusableEls = document.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])');
@@ -103,31 +88,7 @@ class App extends Component {
             //speech.text = textContent || innerText;
             speech.text = _this.customTextGoogleSearch(document.activeElement);
             window.speechSynthesis.speak(speech);
-            // switch(eleType) {
-            //   case 'text':
-            //     return '';
-            //   case 'button':
-            //     return '';
-            //   case 'submit':
-            //     return '';
-            // }
-            // if(eleType === "text" && document.activeElement.title === "search") {
-            //   speech.text = document.activeElement.title || document.activeElement.name;
-            //   window.speechSynthesis.speak(speech);
-            // } else if(eleType === "button") {
-            //   speech.text = document.activeElement.innerHTML;
-            //   window.speechSynthesis.speak(speech);
-            // }
-          }
-          // if (document.activeElement === lastFocusableEl) {
-          //   //console.log(document.activeElement, 'after');
-          //   firstFocusableEl.focus();
-          //   if(eleType === "button") {
-          //     speech.text = document.activeElement.innerHTML;
-          //     window.speechSynthesis.speak(speech);
-          //   }
-          //   e.preventDefault();
-          // }
+            
         }
       }
     });
@@ -167,10 +128,7 @@ class App extends Component {
     speech.rate = 1;
     speech.pitch = 1;
 
-    // if(gSearch) {
-    //   document.getElementsByClassName('gsc-tabhActive')[0].click();
-    //   document.getElementsByClassName('gsc-tabhActive')[0].focus();
-    // }
+    
 
     window.speechSynthesis.speak(speech);
   };
