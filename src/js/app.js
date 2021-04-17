@@ -56,7 +56,6 @@ class App extends Component {
     });
     ctrl.start();
 
-   
     
     document.addEventListener('keyup', function(e) {
       var focusableEls = document.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])');
@@ -88,7 +87,7 @@ class App extends Component {
             //speech.text = textContent || innerText;
             speech.text = _this.customTextGoogleSearch(document.activeElement);
             window.speechSynthesis.speak(speech);
-            
+          }
         }
       }
     });
@@ -127,9 +126,6 @@ class App extends Component {
     speech.volume = 1;
     speech.rate = 1;
     speech.pitch = 1;
-
-    
-
     window.speechSynthesis.speak(speech);
   };
 
