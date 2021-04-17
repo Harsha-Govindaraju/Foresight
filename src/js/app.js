@@ -138,7 +138,16 @@ class App extends Component {
       if (origin) {
         console.clear();
         console.log(`You clicked ${origin.href}`);
-        const url = origin.dataset.ctorig ? origin.dataset.ctorig :origin.href;
+        let url = origin.dataset.ctorig ? origin.dataset.ctorig :origin.href;
+        if(url.includes('youtube') && url.includes('watch')) {
+          let video_id = url.split('v=')[1];
+          let ampersandPosition = video_id.indexOf('&');
+          if(ampersandPosition != -1) {
+           video_id = video_id.substring(0, ampersandPosition);
+          }
+          let staticYouTube = `https://www.youtube.com/embed/${video_id}?enablejsapi=1&origin=http://youtube.com`;
+          url = staticYouTube;
+        }
         this.setState({ iframeSrc: url });
         e.preventDefault();
         return false;
@@ -208,7 +217,7 @@ class App extends Component {
           </div>
           <ul>
             <li>
-              <p><b>google</b> show tom and jerry videos</p>
+              <p><b>google</b> show bill gates interview</p>
             </li>
             <small>
               <b>NOTE:</b> google is must
