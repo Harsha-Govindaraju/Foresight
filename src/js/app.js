@@ -9,6 +9,7 @@ import { nodeName } from "jquery";
 const ctrl = new AnyControl();
 var utt = new SpeechSynthesisUtterance();
 
+const welcomeText = 'Hey there, I am listening, please speak and start with google like google play billgates interview video'
 
 function say(s) {
   utt.text = s;
@@ -80,14 +81,27 @@ class App extends Component {
             document.activeElement !== document.body &&
             document.activeElement !== document.documentElement
           );
-          //console.log(document.activeElement ,anything_is_focused);
           let { type, nodeName, textContent, innerText } = document.activeElement;
           if(anything_is_focused && (nodeName || type)) {
             console.log(type, document.activeElement.nodeName, document.activeElement.textContent || document.activeElement);
-            //speech.text = textContent || innerText;
             speech.text = _this.customTextGoogleSearch(document.activeElement);
             window.speechSynthesis.speak(speech);
           }
+        }
+      } else if(e.code === "Space" && _this.state.iframeSrc && _this.state.iframeSrc.includes('youtube')) {
+        if(document.querySelector("#iframeSrcBtn") && document.querySelector("#iframeSrcBtn").classList.contains('paused')) {
+            document.getElementById('externalPageIframe').src = _this.state.iframeSrc;
+            document.getElementById('externalPageIframe').src += "&autoplay=1";
+            document.querySelector("#iframeSrcBtn").classList.remove('paused');
+            localStorage.setItem('tubeVideoKey', 'no');
+            return;
+          
+        }
+        else {
+          localStorage.setItem('tubeVideoKey', 'yes');
+          document.getElementById("iframeSrcBtn").click();
+          document.querySelector("#iframeSrcBtn").classList.add('paused');
+          return;
         }
       }
     });
@@ -119,7 +133,7 @@ class App extends Component {
     var focusableEls = document.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])');
   }
 
-  textToAudio = (text="Hey there, I am listening and please speak", gSearch='') => {
+  textToAudio = (text=welcomeText, gSearch='') => {
     let speech = new SpeechSynthesisUtterance();
     speech.lang = "en-US";
     speech.text = text;
@@ -141,6 +155,9 @@ class App extends Component {
           return textContent || innerText
         } else if (nodeName === "A" && textContent === "" && innerText === "" && ele.classList.contains('gs-image')) {
           return `you're seeing an image with link - click enter to visit`
+        }
+        else if (nodeName === "BUTTON" && ele.classList.contains('assistYouBtn')) {
+          return textContent || innerText;
         }
         else return `You're on ${textContent || innerText}`;
   }
@@ -167,15 +184,15 @@ class App extends Component {
           </div>
           <br />
           <div>
-            <small> I am here to assist you, please speak something with google as a started keyword, Example like :</small>
+            <button className='assistYouBtn'> I am here to assist you, please speak something with google as a started keyword, Example like :</button>
           </div>
           <ul>
             <li>
-              <p><b>google</b> show bill gates interview</p>
+              <button className='assistYouBtn'><b>google</b> show bill gates interview</button>
             </li>
-            <small>
+            <button className='assistYouBtn'>
               <b>NOTE:</b> google is must
-            </small>
+            </button>
           </ul>
         </div>
         <ActionPanel gapiReady={this.state.gapiReady} gapiSearch={this.state.gapiSearch} textToAudio={this.textToAudio} iframeSrc={this.state.iframeSrc} />

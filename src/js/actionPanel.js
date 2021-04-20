@@ -19,27 +19,37 @@ const ActionPanel = ({ gapiReady, gapiSearch, textToAudio, iframeSrc }) => {
         setIframeCont(true);
         let focusableEls = document.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])');
         focusableEls[0].focus();
-        const searchText = `Your result is ready ${iframeSrc.includes('youtube') && 'and you can play the video by using tab keyword '} and you can go back by pressing f5`;
+        const searchText = `Your result is ready ${iframeSrc.includes('youtube') && 'you can stop or re-start the video by pressing space bar in keyboard'} and or if you want to go back by press f5`;
         textToAudio(searchText, 'gSearch');
 
         setTimeout(() => {
           if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
           [...document.getElementsByTagName('iframe')].filter(a => a.classList.contains('iframeExternal'))[0].contentWindow.focus();
+          document.querySelector(".assistYouBtn").focus();
           if(iframeSrc.includes('youtube')) {
+            document.querySelector(".assistYouBtn").focus();
+            localStorage.setItem('tubeVideoKey', 'no');
             document.getElementById("iframeSrcBtn").addEventListener("click", function() {
-              autoPlayVideo();
+              if(document.querySelector("#iframeSrcBtn").classList.contains('paused')) return;
+              else autoPlayVideo();
             });
           }
           console.clear();
           setTimeout(() => {
             document.getElementById('iframeSrcBtn').click();
-          }, 4000);
+          }, 5200);
         }, 1000);
       }
     });
 
     function autoPlayVideo() {
-      document.getElementById('externalPageIframe').src += "&autoplay=1";
+      const videoPlaying = localStorage.getItem('tubeVideoKey');
+      if(videoPlaying === 'yes') {
+        document.getElementById('externalPageIframe').src = iframeSrc;
+        document.getElementById('externalPageIframe').src +=  '&autoplay=0';
+      }
+      // document.getElementById('externalPageIframe').src += `&autoplay=${videoPlaying === 'yes' ? '0' : '1'}`;
+      else document.getElementById('externalPageIframe').src +=  '&autoplay=1';
     }
     
 
