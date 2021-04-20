@@ -79,3 +79,9 @@ button {
 .showgSearchPanel {
   display: block;
 }
+
+.assistYouBtn {
+  background: #fff;
+    color: #6a67ce;
+    border: none;
+}
