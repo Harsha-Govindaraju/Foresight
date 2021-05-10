@@ -85,3 +85,8 @@ button {
     color: #6a67ce;
     border: none;
 }
+
+.iframeYtExternal {
+  position: absolute;
+  top: 0;
+}
