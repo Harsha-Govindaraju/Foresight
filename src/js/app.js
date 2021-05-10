@@ -33,7 +33,8 @@ class App extends Component {
     this.state = {
       gapiReady: false,
       gapiSearch: false,
-      iframeSrc:""
+      iframeSrc: {},
+      spaceBtnClicked: false
     }
   }
 
@@ -69,12 +70,13 @@ class App extends Component {
       speech.rate = 0.7;
       speech.pitch = 1;
       if (e.key === 'Tab') {
-        if ( e.shiftKey ) /* shift + tab */ {
-          if (document.activeElement === firstFocusableEl) {
-            lastFocusableEl.focus();
-            e.preventDefault();
-          }
-        } else /* tab */ {
+        // if ( e.shiftKey ) /* shift + tab */ {
+        //   if (document.activeElement === firstFocusableEl) {
+        //     lastFocusableEl.focus();
+        //     e.preventDefault();
+        //   }
+        // } 
+        // else /* tab */ {
           let anything_is_focused = (
             document.hasFocus() &&
             document.activeElement !== null &&
@@ -87,23 +89,28 @@ class App extends Component {
             speech.text = _this.customTextGoogleSearch(document.activeElement);
             window.speechSynthesis.speak(speech);
           }
-        }
-      } else if(e.code === "Space" && _this.state.iframeSrc && _this.state.iframeSrc.includes('youtube')) {
-        if(document.querySelector("#iframeSrcBtn") && document.querySelector("#iframeSrcBtn").classList.contains('paused')) {
-            document.getElementById('externalPageIframe').src = _this.state.iframeSrc;
-            document.getElementById('externalPageIframe').src += "&autoplay=1";
-            document.querySelector("#iframeSrcBtn").classList.remove('paused');
-            localStorage.setItem('tubeVideoKey', 'no');
-            return;
+        //}
+      } 
+      else if(e.code === "Space" && Object.keys(_this.state.iframeSrc).length) { //&& _this.state.iframeSrc.type === "youtube"
+        _this.setState(prevState  => ({ spaceBtnClicked: !prevState.spaceBtnClicked }));
+        //localStorage.setItem('tubeVideoKey', 'no');
+      }      
+      // else if(e.code === "Space" && _this.state.iframeSrc && _this.state.iframeSrc.includes('youtube')) {
+      //   if(document.querySelector("#iframeSrcBtn") && document.querySelector("#iframeSrcBtn").classList.contains('paused')) {
+      //       document.getElementById('externalPageIframe').src = _this.state.iframeSrc;
+      //       document.getElementById('externalPageIframe').src += "&autoplay=1";
+      //       document.querySelector("#iframeSrcBtn").classList.remove('paused');
+      //       localStorage.setItem('tubeVideoKey', 'no');
+      //       return;
           
-        }
-        else {
-          localStorage.setItem('tubeVideoKey', 'yes');
-          document.getElementById("iframeSrcBtn").click();
-          document.querySelector("#iframeSrcBtn").classList.add('paused');
-          return;
-        }
-      }
+      //   }
+      //   else {
+      //     localStorage.setItem('tubeVideoKey', 'yes');
+      //     document.getElementById("iframeSrcBtn").click();
+      //     document.querySelector("#iframeSrcBtn").classList.add('paused');
+      //     return;
+      //   }
+      // }
     });
 
     document.addEventListener(`click`, e => {
@@ -113,16 +120,17 @@ class App extends Component {
         console.clear();
         console.log(`You clicked ${origin.href}`);
         let url = origin.dataset.ctorig ? origin.dataset.ctorig :origin.href;
+        let video_id = "";
         if(url.includes('youtube') && url.includes('watch')) {
-          let video_id = url.split('v=')[1];
+          video_id = url.split('v=')[1];
           let ampersandPosition = video_id.indexOf('&');
           if(ampersandPosition != -1) {
            video_id = video_id.substring(0, ampersandPosition);
           }
-          let staticYouTube = `https://www.youtube.com/embed/${video_id}?enablejsapi=1&origin=http://youtube.com`;
-          url = staticYouTube;
+          //let staticYouTube = `https://www.youtube.com/embed/${video_id}?origin=http://example.com`;
+          url = video_id;
         }
-        this.setState({ iframeSrc: url });
+        this.setState({ iframeSrc: { id: url, type: ((url.includes('youtube') && url.includes('watch')) ? 'youtube' : 'google') } });
         e.preventDefault();
         return false;
       }
@@ -138,7 +146,7 @@ class App extends Component {
     speech.lang = "en-US";
     speech.text = text;
     speech.volume = 1;
-    speech.rate = 1;
+    speech.rate = 0.7;
     speech.pitch = 1;
     window.speechSynthesis.speak(speech);
   };
@@ -161,6 +169,8 @@ class App extends Component {
         }
         else return `You're on ${textContent || innerText}`;
   }
+
+  handleVideoCtrls = () => this.setState({  });
 
   render() {
     return (
@@ -195,7 +205,13 @@ class App extends Component {
             </button>
           </ul>
         </div>
-        <ActionPanel gapiReady={this.state.gapiReady} gapiSearch={this.state.gapiSearch} textToAudio={this.textToAudio} iframeSrc={this.state.iframeSrc} />
+        <ActionPanel 
+          gapiReady={this.state.gapiReady} 
+          gapiSearch={this.state.gapiSearch} 
+          textToAudio={this.textToAudio} 
+          iframeSrc={this.state.iframeSrc} 
+          spaceBtnClicked={this.state.spaceBtnClicked}
+        />
       </div>
         
       </>
