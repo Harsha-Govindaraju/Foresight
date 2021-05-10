@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const ActionPanel = ({ gapiReady, gapiSearch, textToAudio, iframeSrc, spaceBtnClicked, handleVideoCtrls }) => {
+const ActionPanel = ({ gapiReady, gapiSearch, textToAudio, iframeSrc }) => {
     const [iframeCont, setIframeCont] = useState(false);
     const [makeAutoPlay, setAutoPlay]= useState(true);
-    let player = "";
+    let player = "", timeout = 1000;
 
     useEffect(() => {
         let focusableEls = document.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])');
@@ -17,13 +17,15 @@ const ActionPanel = ({ gapiReady, gapiSearch, textToAudio, iframeSrc, spaceBtnCl
     useEffect(() => {
       const ele = document.getElementsByClassName('iframeExternal');
       if(iframeSrc.id && !iframeCont)  {
-        document.querySelector(".assistYouBtn").focus();
+        // document.querySelector(".assistYouBtn").focus();
         setIframeCont(true);
-        let focusableEls = document.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])');
-        focusableEls[0].focus();
-        const searchText = `Your result is ready ${iframeSrc.type === 'youtube' && 'you can stop or re-start the video by pressing space bar in keyboard'} or if you want to go back by press f5`;
-        // textToAudio(searchText, 'gSearch');
-        if (!window.YT) { // If not, load the script asynchronously
+        // let focusableEls = document.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])');
+        // focusableEls[0].focus();
+        const searchText = `Your result is ready ${iframeSrc.type === 'youtube' && 'you can pause the video by pressing keyboard space bar'} or if you wish to go back press f5`;
+        textToAudio(searchText, 'gSearch');
+        if (!window.YT && iframeSrc.type === "youtube") {
+          timeout = 6500;
+          // If not, load the script asynchronously
           const tag = document.createElement('script');
           tag.src = 'https://www.youtube.com/iframe_api';
     
@@ -33,35 +35,16 @@ const ActionPanel = ({ gapiReady, gapiSearch, textToAudio, iframeSrc, spaceBtnCl
           const firstScriptTag = document.getElementsByTagName('script')[0];
           firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     
-        } else { // If script is already there, load the video directly
+        } else if(iframeSrc.type === "youtube"){ // If script is already there, load the video directly
+          timeout = 6500;
           loadVideo();
         }
-
-        // setTimeout(() => {
-        //   if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
-        //   [...document.getElementsByTagName('iframe')].filter(a => a.classList.contains('iframeExternal'))[0].contentWindow.focus();
-        //   document.querySelector(".assistYouBtn").focus();
-        //   // if(iframeSrc.includes('youtube')) {
-        //   //   document.querySelector(".assistYouBtn").focus();
-        //   //   localStorage.setItem('tubeVideoKey', 'no');
-        //   //   document.getElementById("iframeSrcBtn").addEventListener("click", function() {
-        //   //     if(document.querySelector("#iframeSrcBtn").classList.contains('paused')) return;
-        //   //     else autoPlayVideo();
-        //   //   });
-        //   // }
-        //   console.clear();
-        //   setTimeout(() => {
-        //     //document.getElementById('iframeSrcBtn').click();
-        //     document.getElementById('externalPageIframe').src +=  '&autoplay=1';
-        //     document.getElementById('iframeSrcBtn').click();
-        //     //setAutoPlay(true);
-        //   }, 5200);
-        // }, 1000);
       }
     });
 
-    useEffect(() => {
-      if(iframeSrc.id && iframeCont)  { 
+    const loadVideo = () => {
+      setTimeout(() => {
+        // the Player object is created uniquely based on the id in props
         player = new window.YT.Player(`youtube-player-${iframeSrc.id}`, {
           videoId: iframeSrc.id,
           height: '600',
@@ -74,88 +57,40 @@ const ActionPanel = ({ gapiReady, gapiSearch, textToAudio, iframeSrc, spaceBtnCl
             onStateChange: onPlayerStateChange
           },
         });
-        if(spaceBtnClicked) player.stopVideo();
-        // else  { 
-        //   playVideoYT();
-        //   handleVideoCtrls(false);
-        // }
-      }
-    }, [spaceBtnClicked]);
-
-    function autoPlayVideo() {
-      const videoPlaying = localStorage.getItem('tubeVideoKey');
-      if(videoPlaying === 'yes') {
-        document.getElementById('externalPageIframe').src = iframeSrc;
-        document.getElementById('externalPageIframe').src +=  '&autoplay=0';
-      }
-      // document.getElementById('externalPageIframe').src += `&autoplay=${videoPlaying === 'yes' ? '0' : '1'}`;
-      else document.getElementById('externalPageIframe').src +=  '&autoplay=1';
-    }
-
-    const loadVideo = () => {
-      //const { iframeSrc } = props;
-  
-      // the Player object is created uniquely based on the id in props
-      player = new window.YT.Player(`youtube-player-${iframeSrc.id}`, {
-        videoId: iframeSrc.id,
-        height: '600',
-        width: '870',
-        playerVars: {
-          autoplay: 1
-        },
-        events: {
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange
-        },
-      });
+      }, timeout);
     };
 
     const onPlayerReady = event => {
       event.target.setVolume(100);
       event.target.playVideo();
-      document.querySelector(".assistYouBtn").focus();
-      // bind events
-      // var playButton = document.getElementById("play-button");
-      // playButton.addEventListener("click", function() {
-      //   player.playVideo();
-      // });
-      
-      // var pauseButton = document.getElementById("pause-button");
-      // pauseButton.addEventListener("click", function() {
-      //   player.pauseVideo();
-      // });
+      // document.querySelector(".assistYouBtn").focus();
+      document.addEventListener('keyup', function(e) { 
+        if(e.code === "Space") {
+          player.getPlayerState() === 1 && player.pauseVideo();
+          player.getPlayerState() === 2 && player.playVideo();
+        } 
+      });
     };
 
     const onPlayerStateChange = e => {
-      if(iframeSrc.id && iframeCont)  { 
-        if(spaceBtnClicked) stopVideo();
-        else  { 
-          startVideo();
-         // handleVideoCtrls(false);
-        }
-      }
       console.log(e.target);
-    }
-    
-    function stopVideo() {
-      player.stopVideo();
-    }
-
-    function startVideo() {
-      player.startVideo();
     }
 
     return (
             <div className="col-md-8 col-xs-6">
               <h2>Action Panel</h2>
               <div className='gcse-searchbox'></div><div className="gcse-searchresults"></div>
-              {iframeSrc.id && <>
+              {iframeSrc.id && iframeSrc.type === "youtube" && <>
                   {/* <iframe src={iframeSrc} name="myFrame" className='iframeExternal' id='externalPageIframe'  allow={makeAutoPlay}></iframe> */}
                   <div id={`youtube-player-${iframeSrc.id}`} className='iframeYtExternal'></div>
                   {/* <p><a href={iframeSrc} target="myFrame" id="iframeSrcBtn"></a></p> */}
                   {/* <button id="pause-button" style={{  position: 'absolute',
                       bottom: '15px' }}>Pause</button> */}
               </>}
+              {iframeSrc.id && iframeSrc.type === "google" && <>
+                  <iframe src={iframeSrc.id} name="myFrame" className='iframeExternal' id='externalPageIframe' ></iframe>
+                </>
+              }
             </div>
     );
 }
